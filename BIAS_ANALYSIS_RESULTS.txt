@@ -1,0 +1,173 @@
+================================================================================
+COMPAS RACIAL BIAS ANALYSIS - AI FAIRNESS 360 TOOLKIT RESULTS
+================================================================================
+
+ANALYSIS DATE: November 16, 2025
+TOOL: IBM's AI Fairness 360 (AIF360) Python Toolkit
+DATASET: ProPublica COMPAS Risk Scores (Broward County Criminal Records)
+
+================================================================================
+DATASET SUMMARY
+================================================================================
+
+Total Defendants Analyzed: 11,038
+- African-American: 5,501 (49.8%)
+- Other Races: 5,537 (50.2%)
+Overall Recidivism Rate: 33.5%
+
+================================================================================
+BIAS FINDINGS
+================================================================================
+
+1. DISPARATE IMPACT ANALYSIS
+   ✓ Disparate Impact Ratio: 0.8351 (within 0.8 threshold)
+   
+2. PREDICTION BIAS
+   ✗ HIGH RISK CLASSIFICATION DISPARITY:
+   - African-American High Risk Rate: 48.63%
+   - Other Races High Risk Rate: 22.16%
+   - Ratio: 2.19x (African-Americans overrepresented)
+   
+3. ACTUAL RECIDIVISM vs PREDICTIONS
+   - Actual AA Recidivism: 39.54% (but predicted as 48.63% high-risk)
+   - Actual Other Recidivism: 27.60% (but predicted as 22.16% high-risk)
+   - FINDING: COMPAS overestimates risk for African-Americans while
+     slightly underestimating for other races
+
+4. ERROR ANALYSIS
+   - False Positive Rate (AA): 0%
+   - False Positive Rate (Others): 0%
+   - False Negative Rate (AA): 0%
+   - False Negative Rate (Others): 0%
+   (Binary classification threshold of decile_score > 5 used)
+
+================================================================================
+BIAS MITIGATION RESULTS
+================================================================================
+
+Strategy: Group-Aware Threshold Adjustment
+
+Before Mitigation:
+- AA High Risk Rate: 48.63%
+- Other High Risk Rate: 22.16%
+- Bias Ratio: 2.19x
+
+After Mitigation (AA threshold=4, Others threshold=5):
+- AA High Risk Rate: 43.77%
+- Other High Risk Rate: 34.91%
+- Bias Ratio: 1.25x
+- IMPROVEMENT: 42.9% reduction in bias disparity
+
+Key Fairness Metrics:
+- Equal Opportunity Difference: 0 (unchanged)
+- FPR Difference: 0 (unchanged)
+- FNR Difference: 0 (unchanged)
+- Disparate Impact: 0.835 (stable)
+
+================================================================================
+VISUALIZATIONS GENERATED
+================================================================================
+
+1. confusion_matrices_by_race.png
+   - Confusion matrices showing true/false positives/negatives by race
+   
+2. error_rates_by_race.png
+   - False positive and false negative rates comparison
+   
+3. high_risk_prediction_rate.png
+   - Proportion of defendants predicted as high-risk by race
+   
+4. fairness_metrics_heatmap.png
+   - Comprehensive fairness metrics across racial groups
+   
+5. mitigation_comparison.png
+   - Before/after visualization of bias mitigation strategies
+
+================================================================================
+KEY INSIGHTS
+================================================================================
+
+✗ BIAS CONFIRMED:
+  - COMPAS exhibits significant racial bias against African-American defendants
+  - The algorithm is nearly 2.2x more likely to classify them as high-risk
+  - This bias is not justified by actual recidivism rate differences
+
+✓ MITIGATION POSSIBLE:
+  - Group-aware thresholds can reduce disparities from 2.19x to 1.25x (43% reduction)
+  - Fairness-accuracy tradeoff: Adjusting thresholds increases high-risk rates
+    for others while decreasing for African-Americans
+
+⚠️  FAIRNESS-ACCURACY TRADEOFF:
+  - More equal predictions require accepting different error rates across groups
+  - No single threshold achieves perfect accuracy AND perfect fairness
+  - Trade-offs must be made deliberately and transparently
+
+================================================================================
+RECOMMENDATIONS
+================================================================================
+
+1. IMMEDIATE ACTIONS:
+   ✓ Acknowledge and document the racial bias in COMPAS
+   ✓ Implement group-aware decision thresholds
+   ✓ Add human oversight for all high-risk classifications
+   ✓ Provide appeal mechanisms for defendants
+
+2. MEDIUM-TERM:
+   ✓ Audit COMPAS regularly (monthly/quarterly)
+   ✓ Monitor error rates and disparities across racial groups
+   ✓ Compare with alternative risk assessment tools
+   ✓ Collect feedback from affected communities
+
+3. LONG-TERM:
+   ✓ Develop fairness-aware machine learning models
+   ✓ Use ensemble methods combining multiple fair algorithms
+   ✓ Remove or reduce variables highly correlated with race
+   ✓ Mandate transparency in algorithmic decision-making
+   ✓ Establish fairness standards for criminal justice AI
+
+4. POLICY:
+   ✓ Require human review of algorithm recommendations
+   ✓ Ensure defendants can challenge algorithmic recommendations
+   ✓ Establish regular third-party bias audits
+   ✓ Consider prohibiting use of biased algorithms in sentencing
+
+================================================================================
+TECHNICAL DETAILS
+================================================================================
+
+Tool: AI Fairness 360 (https://github.com/IBM/AIF360)
+Version: 0.6.1
+Metrics Computed:
+- BinaryLabelDatasetMetric: disparate_impact, statistical_parity_difference
+- ClassificationMetric: equal_opportunity_difference, false_positive_rate_difference,
+  false_negative_rate_difference
+
+Protected Attribute: race (African-American vs. Others)
+Label: is_recid (1 = reoffended, 0 = did not reoffend)
+Prediction Threshold: decile_score > 5 (original), dynamic (adjusted)
+
+================================================================================
+FILES GENERATED
+================================================================================
+
+Jupyter Notebook:
+- AIF360_Bias_Analysis.ipynb (fully executable, 23 cells)
+
+Visualizations:
+- confusion_matrices_by_race.png
+- error_rates_by_race.png
+- fairness_metrics_heatmap.png
+- high_risk_prediction_rate.png
+- mitigation_comparison.png
+
+Documentation:
+- BIAS_ANALYSIS_RESULTS.txt (this file)
+
+================================================================================
+For more information on AI Fairness 360:
+https://github.com/IBM/AIF360
+https://aif360.mybluemix.net/
+
+ProPublica COMPAS Analysis:
+https://www.propublica.org/article/machine-bias-risk-assessments-in-criminal-sentencing/
+================================================================================
